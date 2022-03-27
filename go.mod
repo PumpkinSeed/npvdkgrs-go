@@ -2,10 +2,7 @@ module github.com/PumpkinSeed/npvdkgrs-go
 
 go 1.17
 
-require (
-	github.com/alinush/go-mcl v0.0.0-20210224202455-eb6000c9b115
-	github.com/kilic/bls12-381 v0.1.0
-)
+require github.com/alinush/go-mcl v0.0.0-20210224202455-eb6000c9b115
 
 require (
 	github.com/magefile/mage v1.10.0 // indirect
