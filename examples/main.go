@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+
+	"github.com/PumpkinSeed/npvdkgrs-go"
 	"github.com/alinush/go-mcl"
 )
 
@@ -37,12 +39,29 @@ func main() {
 	var ph mcl.G2
 	mcl.G2Mul(&ph, &tmpG2, &sh)
 
-	// const ESH = PVSHEncode(id, PK, sh, g2);
-	//	const verificationResult = PVSHVerify(id, PK, PH, ESH, g2);
-	//	const decodedSh = PVSHDecode(id, PK, sk, ESH);
+	pvsh := npvdkgrs.PVSH{
+		ID: id,
+		PK: pk,
+	}
+
+	esh, err := pvsh.Encode(sh, tmpG2)
+	if err != nil {
+		panic(err)
+	}
+	if err := pvsh.Verify(ph, esh, tmpG2); err != nil {
+		panic(err)
+	}
+	decodedSh, err := pvsh.Decode(sk, esh)
+	if err != nil {
+		panic(err)
+	}
 
 	fmt.Println("PK: ", string(pk.GetString(16)))
 	fmt.Println("sk: ", string(sk.GetString(16)))
 	fmt.Println("PH: ", string(ph.GetString(16)))
 	fmt.Println("sh: ", string(sh.GetString(16)))
+	fmt.Println("---------------------------------------")
+	fmt.Println("sh': ", sh.GetString(16))
+	fmt.Println("sh' is valid: ", decodedSh.IsEqual(&sh))
+	fmt.Println("ESH: ", esh)
 }
